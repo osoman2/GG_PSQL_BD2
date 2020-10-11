@@ -2,8 +2,8 @@
 #ifndef GRAPHS_NOMEQUIEROIRSENORGRAFO_GRAPH_H
 #define GRAPHS_NOMEQUIEROIRSENORGRAFO_GRAPH_H
 
-#include "../components/node.h"
-#include "../components/edge.h"
+#include "../Components/node.h"
+#include "../Components/edge.h"
 #include <functional>
 
 struct Traits {
