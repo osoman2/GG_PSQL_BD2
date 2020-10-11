@@ -17,20 +17,30 @@ Los resultados esperados para este proyecto es poder realizar satisfactoriamente
 ## Técnicas utilizadas
 
 ### Sequential FIle
-  * Inserci\'on
-  * Eliminaci\'on
-  * Busqueda
+Lo definimos como un archivo que mantiene los registros ordenados fisicamente en base al valor de alguno de sus campos. Este nos permite tener búsquedas eficientes. Sin embargo, son dificiles de mantener y generan un costo extra a la hora de reorganizar el archivo.
+  * Inserción
+  Localizamos la posición en donde será insertado el nuevo registro. Si el espacio esta libre, lo insertamos. De lo contrario, insertamos un registro en un espacio auxiliar y los actualizamos los punteros.
+  * Eliminación
+  Utilizamos los punteros para saltar las tuplas eliminadas hasta llegar al registro que queremos eliminar.
+  * Búsqueda
+  Usamos un algoritmo de busqueda binaria para llegar al registro que queremos buscar.
+  
 ### Extendible Hashing
-  * Inserci\'on
-  * Eliminaci\'on
-  * Busqueda
+Lo definimos como un hash dinámico para gestionar grandes base de datos y que reducen su tamaño en el tiempo (transaccionales). Estos indexan los registros en una tabla de direcciones de buckets usando un prefijo/sufijo.
+  * Inserción
+  Lozalizamos el bucket usando la secuencia D-bit. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
+  En caso no se pueda incrementar la profundidad, ocurre un desbordamiento.
+  * Eliminación
+  Localizar el bucket respectivo mediante el índice y remover el registro. Si el bucket queda vacío, puede sr liberado, lo que implica actualizar el índice. Por otro lado, si dos buckets quedan con pocos elementos y tienen el mismo prefijo en la profundida local anterior, procedemos a mezclarlos, lo que implica actualizar el índice nuevamente.
+  * Búsqueda
+  Hacemos coincidir la secuencia D-bit con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
 ### Transacciones
-
+Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.
 ## Resultados experimentales
 
 ### Comparación entre técnicas de indexación
   * Inserción
-  * Busqueda
+  * Búsqueda
 
 ### Análisis
 
