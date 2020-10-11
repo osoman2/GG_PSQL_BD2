@@ -6,10 +6,49 @@
 #define GG_PSQL_BD2_TESTPLANNER_H
 
 #include <Planner.h>
+#include <iostream>
+#include <thread>
+
+using namespace std;
 
 class TestPlanner {
+    Planner plan;
+
 public:
-    static void serializableTest() {
+    TestPlanner() {
+        plan = Planner();
+        plan.addTransaction(1);
+        plan.addTransaction(2);
+        plan.addTransaction(3);
+    }
+
+    void *transaction1() {
+        plan.read(1, "X");
+        plan.write(1, "X");
+        plan.read(1, "Y");
+        plan.write(1, "Y");
+    }
+
+    void *transaction2() {
+        plan.read(2, "Z");
+        plan.read(2, "Y");
+        plan.write(2, "Y");
+        plan.read(2, "X");
+        plan.write(2, "X");
+    }
+
+    void *transaction3() {
+        plan.read(3, "Y");
+        plan.read(3, "Z");
+        plan.write(3, "Y");
+        plan.write(3, "Z");
+    }
+
+    void runThreads() {
+
+    }
+
+    void serializableTest() {
         auto plan = Planner();
 
         plan.print = true;
@@ -64,5 +103,17 @@ public:
     }
 };
 
+void foo() {
 
+}
+
+class TestConcurrency {
+public:
+    static void run() {
+        TestPlanner *test1 = new TestPlanner();
+        //thread test(foo);
+
+        delete test1;
+    }
+};
 #endif //GG_PSQL_BD2_TESTPLANNER_H

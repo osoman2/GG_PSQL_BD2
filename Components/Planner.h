@@ -9,7 +9,10 @@
 #include <vector>
 #include "Graph.h"
 
+
 using namespace std;
+
+typedef void * (*THREADFUNCPTR)(void *);
 
 class Planner {
 public:
@@ -25,6 +28,11 @@ public:
         this->prefix = "T";
         precedence = new graph(true);
         print = false;
+    }
+
+    void* execute(void *){
+        cout << "Task :: execute from Thread ID : " << std::endl;
+        return NULL;
     }
 
     void addTransaction(int id) {

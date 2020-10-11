@@ -7,6 +7,8 @@
 
 #include "FileEntity.h"
 
+const char* sep = "|";
+
 class Alumno : public FileEntity {
 public:
     char codigo[5];
@@ -30,6 +32,34 @@ public:
             this->destiny = destiny;
     }
 
+    Alumno(string recordLine) {
+        char str[recordLine.length() + 1];
+        strcpy(str, recordLine.c_str());
+
+        char * pch;
+        pch = strtok (str, sep);
+
+        int index=0;
+        while (pch != NULL) {
+            switch( index ) {
+                case 0:
+                    strcpy(this->codigo, pch);
+                    break;
+                case 1:
+                    strcpy(this->nombre, pch);
+                    break;
+                case 2:
+                    strcpy(this->carrera, pch);
+                    break;
+                case 3:
+                    this->ciclo = atoi(pch);
+                    break;
+            }
+            pch = strtok(NULL, sep);
+            index++;
+        }
+    }
+
     Alumno(vector<string> values) {
         for(int i=0; i<values.size(); i++) {
             switch (i) {
@@ -51,11 +81,6 @@ public:
     }
 
     void showData() {
-      /*cout <<"Código: " << this->codigo << endl;
-      cout <<"Nombre: " << this->nombre << endl;
-      cout <<"Carrera: " << this->carrera << endl;
-      cout <<"Ciclo: " << this->ciclo << endl;
-      cout <<"Next: " << this->next << "/"<< this->destiny << endl;*/
       cout << setw(7) << left << this->codigo << setw(21) << this->nombre << setw(16) << this->carrera << setw(5) << this->ciclo << this->next << "-"<<this->destiny << endl;
     }
 
@@ -74,6 +99,16 @@ public:
     string toLine() {
       return string(this->codigo) + '\t' + string(this->nombre) + '\t' + string(this->carrera) + '\t' + to_string(this->ciclo)
       + '\t' + to_string(this->next) + '\t' + this->destiny;
+    }
+
+    string toLineWithSep() {
+        return string(this->codigo) + sep + string(this->nombre) + sep + string(this->carrera) + sep +
+                to_string(this->ciclo);
+    }
+
+    string getHeader() {
+        string sep_str = string(sep);
+        return "codigo" + sep_str + "nombre" + sep_str + "carrera" + sep_str + "ciclo";
     }
 
     bool operator <(const Alumno& rhs) {

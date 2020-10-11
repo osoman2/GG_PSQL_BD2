@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <vector>
+#include <VariableRecord.h>
 #include "../Components/Sql.h"
 #include "../Components/SequentialFile.h"
 
@@ -17,6 +18,7 @@ class AppController {
 public:
     bool run(vector<string> lines) {
         vector<Sql> sqls;
+        vector<T> result;
 
         for(auto line: lines) {
             auto tmp = Sql(line);
@@ -31,14 +33,28 @@ public:
         bool rc;
         for(auto sqlsentece: sqls) {
             cout << sqlsentece.sentence << endl;
-            auto result = execute_sentence(sqlsentece, &rc);
+            result = execute_sentence(sqlsentece, &rc);
 
             for (auto res: result)
                 res.showData();
         }
+
+        if(result.size() > 0)
+            this->saveOutput("../data/output.txt", result);
     }
 
 private:
+
+    void saveOutput(string filename, vector<T> data) {
+        auto fileOutput = VariableRecord<T>(filename);
+        const char * file1 = filename.c_str();
+
+        remove(file1);
+
+        for(auto record: data)
+            fileOutput.add(record);
+    }
+
     vector<T> execute_sentence(Sql sqlsentence, bool rc) {
         vector<T> result;
 

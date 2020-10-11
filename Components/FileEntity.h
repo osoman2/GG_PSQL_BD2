@@ -20,8 +20,11 @@ public:
 
     virtual void readData()=0;
 
+    virtual string getHeader()=0;
+
     virtual string toLine()=0;
 
+    virtual string toLineWithSep()=0;
 };
 
 
