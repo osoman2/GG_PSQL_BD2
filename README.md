@@ -1,7 +1,7 @@
 # Base de Datos 2: Proyecto 1
 
 Integrantes:
-* Mozquera, Raúl
+* Mosquera, Raúl
 * Nicho, Jorge
 * Vilchez, Osman
 
