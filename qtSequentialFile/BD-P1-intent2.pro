@@ -20,6 +20,14 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    Alumno.h \
+    AppController.h \
+    FileEntity.h \
+    SequentialFile.h \
+    Sql.h \
+    TestController.h \
+    TestSequential.h \
+    VariableRecord.h \
     mainwindow.h
 
 FORMS += \
@@ -29,3 +37,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Alumno.txt \
+    auxfile.txt \
+    output.txt

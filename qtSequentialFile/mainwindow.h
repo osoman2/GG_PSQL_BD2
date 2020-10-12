@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,6 +16,17 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+private slots:
+    QString on_pushButton_clicked();
+
+    QString on_pushButton_2_clicked();
+
+    QString on_pushButton_3_clicked();
+
+    int on_pushButton_4_clicked();
+
+    void on_pushButton_ADD_clicked();
 
 private:
     Ui::MainWindow *ui;
