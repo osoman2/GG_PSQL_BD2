@@ -3,7 +3,7 @@ codigo|nombre|carrera|ciclo
 1283|David|CS|6
 6312|Ivan|CS|5
 3142|Jonathan|CS|7
-1253|Jose|CS|7
+1312|Jorge|CS|7
 9761|Luis|CS|6
 8777|Osman|CS|7
 3129|Piero|CS|7
@@ -14,4 +14,4 @@ codigo|nombre|carrera|ciclo
 1133|Angela|Disenio|5
 9917|Paola|Ing.Electrica|10
 1777|Julio|Economia|10
-3999|flavio|quimica|2
+2929|Ximena|cs|5

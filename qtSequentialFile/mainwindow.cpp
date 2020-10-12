@@ -21,8 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->outputCarrera->setText("");
     ui->OuputCiclo->setText("");
 
-    // Open the file from the resources. Instead of the file
-    // Need to specify the path to your desired file
 }
 
 void MainWindow::setValueAt(int ix, int jx, const QString &value)
@@ -56,10 +54,8 @@ void MainWindow::on_pushButton_ADD_clicked()
     ui->outputCarrera->setText(inputCarrera);
     int inputCiclo = QInputDialog::getInt(this,"CICLO","Ingrese su ciclo: ");
     ui->OuputCiclo->setText(QString::number(inputCiclo));
-    QString filename = "/home/theflilux/qtSequentialFile/Alumno.txt";
 
     // Cambiando QString to string
-    std::string utf8_filename = filename.toUtf8().constData();
     std::string utf8_inputCodigo = inputCodigo.toUtf8().constData();
     std::string utf8_inputNombre = inputNombre.toUtf8().constData();
     std::string utf8_inputCarrera = inputCarrera.toUtf8().constData();
@@ -71,11 +67,9 @@ void MainWindow::on_pushButton_5_clicked()
 {
     QFile file("/home/theflilux/qtSequentialFile/output.txt");
     if ( !file.open(QFile::ReadOnly | QFile::Text) ) {
-        qDebug() << "File not exists";
+        qDebug() << "El archivo no existe";
     } else {
-        // Create a thread to retrieve data from a file
         QTextStream xin(&file);
-        //Reads the data up to the end of file
         int ix=-1;
         while (!xin.atEnd())
         {
@@ -99,6 +93,7 @@ void MainWindow::on_pushButton_5_clicked()
 void MainWindow::on_pushButton_6_clicked()
 {
     testLoad_add_Alumno("/home/theflilux/qtSequentialFile/Alumno.txt");
+    MainWindow::on_pushButton_clicked();
 }
 
 void MainWindow::on_pushButton_7_clicked()
