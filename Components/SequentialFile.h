@@ -760,7 +760,8 @@ public:
             }
 
             while(stream.read((char*) &record, sizeof(T))) {
-                tmp.push_back(record);
+                if(record.next != DELETED_REG)
+                    tmp.push_back(record);
             }
             stream.close();
         } else {

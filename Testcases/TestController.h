@@ -17,9 +17,9 @@ public:
         //lines.push_back("INSERT INTO "+filename+" VALUES (9991,\"Heider\",\"CS\",11)");
         //lines.push_back("INSERT INTO "+filename+" VALUES (1111,\"Ernesto\",\"CS\",2)");
         //lines.push_back("SELECT * FROM " + filename);
+        //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
         lines.push_back("SELECT * FROM " + filename);
         //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
-        //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Paola\"");
         //lines.push_back("SELECT * FROM " + filename);
 
         app.run(lines);
