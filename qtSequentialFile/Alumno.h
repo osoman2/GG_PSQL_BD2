@@ -3,12 +3,13 @@
 
 #include "FileEntity.h"
 #include <string.h>
+#include <iomanip>
 #include <algorithm>
 #include <vector>
-#include <iomanip>
+
+const char* sep = "|";
 
 class Alumno : public FileEntity {
-
 public:
     char codigo[5];
     char nombre[20];

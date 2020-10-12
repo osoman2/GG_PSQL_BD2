@@ -4,7 +4,6 @@
 #include <iostream>
 
 static int NOT_FOUND = -7;
-const char* sep = "|";
 
 using namespace std;
 
@@ -23,6 +22,5 @@ public:
 
     virtual string toLineWithSep()=0;
 };
-
 
 #endif // FILEENTITY_H

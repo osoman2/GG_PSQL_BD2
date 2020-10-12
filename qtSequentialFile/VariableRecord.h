@@ -96,4 +96,5 @@ public:
     }
 };
 
+
 #endif // VARIABLERECORD_H

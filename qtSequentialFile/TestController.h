@@ -12,8 +12,8 @@ public:
         vector<string> lines;
         AppController<Alumno> app;
 
-        //lines.push_back("INSERT INTO "+filename+" VALUES (9991,\"Heider\",\"CS\",11)");
-        //lines.push_back("INSERT INTO "+filename+" VALUES (1111,\"Ernesto\",\"CS\",2)");
+        //lines.push_back("INSERT INTO "+filename+" VALUES (\"9991\",\"Chambilla\",\"CS\",1)");
+        //lines.push_back("INSERT INTO "+filename+" VALUES (\"1112\",\"andy\",\"finanzas\",2)");
         lines.push_back("SELECT * FROM " + filename);
         //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
         //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
@@ -30,8 +30,42 @@ public:
         AppController<Alumno> app;
 
         //lines.push_back("INSERT INTO "+filename+" VALUES (9991,\"Heider\",\"CS\",11)");
-        //lines.push_back("INSERT INTO "+filename+" VALUES ("+codigo+",\""+nombre+"\",\""+carrera+"\","+std::to_string(ciclo)+")");
+        lines.push_back("INSERT INTO "+filename+" VALUES (\""+codigo+"\",\""+nombre+"\",\""+carrera+"\","+std::to_string(ciclo)+")");
         lines.push_back("SELECT * FROM " + filename);
+        //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
+        //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
+        //lines.push_back("SELECT * FROM " + filename);
+        //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
+        //lines.push_back("SELECT * FROM " + filename);
+
+        app.run(lines);
+
+    }
+
+    static void testRunDelete(string filename, string nombre) {
+        vector<string> lines;
+        AppController<Alumno> app;
+
+        //lines.push_back("INSERT INTO "+filename+" VALUES (9991,\"Heider\",\"CS\",11)");
+        //lines.push_back("INSERT INTO "+filename+" VALUES (\""+codigo+"\",\""+nombre+"\",\""+carrera+"\","+std::to_string(ciclo)+")");
+        lines.push_back("DELETE FROM "+filename+" WHERE nombre = \""+nombre+"\"");
+        lines.push_back("SELECT * FROM " + filename);
+        //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
+        //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
+        //lines.push_back("SELECT * FROM " + filename);
+        //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
+        //lines.push_back("SELECT * FROM " + filename);
+
+        app.run(lines);
+
+    }
+
+    static void testRunSearch(string filename, string nombre) {
+        vector<string> lines;
+        AppController<Alumno> app;
+
+        lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \""+nombre+"\"");
+        //lines.push_back("SELECT * FROM " + filename);
         //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
         //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
         //lines.push_back("SELECT * FROM " + filename);

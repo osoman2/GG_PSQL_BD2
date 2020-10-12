@@ -18,15 +18,17 @@ public:
     ~MainWindow();
 
 private slots:
-    QString on_pushButton_clicked();
-
-    QString on_pushButton_2_clicked();
-
-    QString on_pushButton_3_clicked();
-
-    int on_pushButton_4_clicked();
+    void on_pushButton_clicked();
 
     void on_pushButton_ADD_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_8_clicked();
 
 private:
     Ui::MainWindow *ui;
