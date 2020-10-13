@@ -7,7 +7,7 @@
 
 #include <Planner.h>
 #include <iostream>
-#include <thread>
+#include <pthread.h>
 
 using namespace std;
 
@@ -48,7 +48,7 @@ public:
 
     }
 
-    void serializableTest() {
+    static void serializableTest() {
         auto plan = Planner();
 
         plan.print = true;
@@ -103,17 +103,113 @@ public:
     }
 };
 
-void foo() {
+class TestPlanner2
+{
+public:
+    Planner plan;
 
-}
+    TestPlanner2() {
+        this->plan = Planner();
+        this->plan.print = true;
+    }
+
+    void * t1_before_plan() {
+//    cout << "TestPlanner2 :: execute from Transaction 1 " << pthread_self()
+        cout << "TestPlanner2 :: execute from Transaction 1 " << endl;
+        this->plan.addTransaction(1);
+        this->plan.read(1, "Y");
+        this->plan.write(1, "Y");
+        this->plan.read(1, "X");
+        this->plan.write(1, "X");
+
+        return NULL;
+    }
+
+    void * t2_before_plan(){
+        cout << "TestPlanner2 :: execute from Transaction 2 " << endl;
+        this->plan.addTransaction(2);
+        this->plan.read(2, "Z");
+        this->plan.read(2, "Y");
+        this->plan.write(2, "Y");
+        this->plan.read(2, "X");
+        this->plan.write(2, "X");
+
+        return NULL;
+    }
+
+    void * t3_before_plan() {
+        cout << "TestPlanner2 :: execute from Transaction 3 " << endl;
+        this->plan.addTransaction(3);
+        this->plan.read(3, "Y");
+        this->plan.read(3, "Z");
+        this->plan.write(3, "Y");
+        this->plan.write(3, "Z");
+
+        return NULL;
+    }
+
+    bool isSerializable() {
+        return this->plan.isSerializable();
+    }
+
+    void show_graph() {
+        this->plan.showPrecedenceGraph();
+    }
+
+};
+
+typedef void * (*THREADFUNCPTR)(void *);
 
 class TestConcurrency {
 public:
-    static void run() {
-        TestPlanner *test1 = new TestPlanner();
-        //thread test(foo);
+    static int run() {
+        TestPlanner2 * testPlan = new TestPlanner2();
+        // Thread id
+        pthread_t threadId1;
+        pthread_t threadId2;
+        pthread_t threadId3;
 
-        delete test1;
+        int err = pthread_create(&threadId1, NULL, (THREADFUNCPTR) &TestPlanner2::t1_before_plan, testPlan);
+        if (err) {
+            std::cout << "Thread creation failed : " << strerror(err);
+            return err;
+        }
+
+        err = pthread_create(&threadId2, NULL, (THREADFUNCPTR) &TestPlanner2::t2_before_plan, testPlan);
+        if (err) {
+            std::cout << "Thread creation failed : " << strerror(err);
+            return err;
+        }
+
+        err = pthread_create(&threadId3, NULL, (THREADFUNCPTR) &TestPlanner2::t3_before_plan, testPlan);
+        if (err) {
+            std::cout << "Thread creation failed : " << strerror(err);
+            return err;
+        }
+
+        // Do some stuff in Main Thread
+        std::cout << "Waiting for thread " << threadId1 << " to exit" << std::endl;
+        err = pthread_join(threadId1, NULL);
+        if (err)
+            return err;
+
+        std::cout << "Waiting for thread " << threadId2 << " to exit" << std::endl;
+        err = pthread_join(threadId2, NULL);
+        if (err)
+            return err;
+
+        std::cout << "Waiting for thread " << threadId3 << " to exit" << std::endl;
+        err = pthread_join(threadId3, NULL);
+        if (err)
+            return err;
+
+        testPlan->show_graph();
+        delete testPlan;
+
+        auto res = (testPlan->isSerializable()) ? "Yes" : "No";
+        cout << "Serializable " << res <<endl;
+
+        std::cout << "Exiting Main" << std::endl;
     }
 };
 #endif //GG_PSQL_BD2_TESTPLANNER_H

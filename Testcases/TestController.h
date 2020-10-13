@@ -17,15 +17,25 @@ public:
         //lines.push_back("INSERT INTO "+filename+" VALUES (9991,\"Heider\",\"CS\",11)");
         //lines.push_back("INSERT INTO "+filename+" VALUES (1111,\"Ernesto\",\"CS\",2)");
         //lines.push_back("SELECT * FROM " + filename);
-        //lines.push_back("DELETE FROM "+filename+" WHERE nombre = \"Jacqueline\"");
-        lines.push_back("SELECT * FROM " + filename);
-        //lines.push_back("SELECT * FROM "+filename+" WHERE nombre = \"Osman\"");
+        //lines.push_back("DELETE FROM "+filename+" WHERE name = \"Jacqueline\"");
+        //lines.push_back("SELECT * FROM " + filename);
+        lines.push_back("SELECT * FROM "+filename+" WHERE name = \"Osman\"");
         //lines.push_back("SELECT * FROM " + filename);
 
         app.run(lines);
 
     }
 
+    static void testRunGames(string filename) {
+        vector<string> lines;
+        AppController<Game> app;
+
+        lines.push_back("SELECT * FROM " + filename + " WHERE name = \"Dota 2\"");
+        //lines.push_back("DELETE FROM "+filename+" WHERE name = \"Dota 2\"");
+        //lines.push_back("SELECT * FROM " + filename);
+
+        app.run(lines);
+    }
 //    static void testSQL(string string1) {
 //        Sql sql1 = Sql(string1);
 //        cout << "SQL " << string1 << " translated into: " <<endl;

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <iomanip>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -42,7 +43,7 @@ public:
 
     SequentialFile(string fileName) {
         this->fileName = fileName;
-        this->auxfileName = "../data/auxfile.txt";
+        this->auxfileName = fileName + ".aux";
         this->reorgThreshold = 8;
         //Header: Size + lines Deleted + first row + source of first row
         this->headerLength = sizeof(int) * 3 + sizeof(char);
@@ -140,7 +141,7 @@ public:
 
                 inFile.read((char*) &record, sizeof(T));
 
-                if(record.nombre < key) {
+                if(record.name < key) {
                     //Maybe exists in auxiliar file?
                     if (record.destiny == 'a' ) {
                         result = findInAuxFile(key, record.next, m);
@@ -152,7 +153,8 @@ public:
                         }
                     }
                     l = m + 1;
-                } else if (record.nombre > key) {
+                    //cout << record.name << " < " << key << endl;
+                } else if (record.name > key) {
                     if (record.destiny == 'a' ) {
                         //Maybe exists in auxiliar file?
                         result = findInAuxFile(key, record.next, m);
@@ -164,8 +166,10 @@ public:
                         }
                     }
                     u = m - 1;
+                    //cout << record.name << " > " << key << endl;
                 } else {
                     source = 'd'; //principal
+                    //cout << record.name << " eq " << key << endl;
                     if (record.next == DELETED_REG)
                         found=false;
                     else
@@ -189,7 +193,7 @@ public:
                     auxFile.close();
                 }
 
-                if (record.nombre == key && record.next != DELETED_REG ) {
+                if (record.name == key && record.next != DELETED_REG ) {
                     actualNode = RegPointer(firstRecord, 'a');
 
                     auto tmp = make_pair(actualNode, prevNode);
@@ -229,12 +233,146 @@ public:
         }
     }
 
+    pair<pair<RegPointer, RegPointer>, bool> exists2(string key) {
+        ifstream inFile;
+        fstream auxFile;
+        bool found;
+        int low, high, guess;
+        T record;
+        int firstRecord;
+        int deletedRows;
+        char source;
+        char sourcefirstRecord;
+        RegPointer actualNode;
+        RegPointer prevNode;
+        pair<pair<int, RegPointer>, bool> result;
+
+        inFile.open(fileName, ios::binary);
+        cout << "key " << key << " len " << key.length() <<endl;
+
+        if (inFile.is_open()) {
+            inFile.read((char*) &this->size, sizeof(int));
+            inFile.read((char*) &deletedRows, sizeof(int));
+            inFile.read((char*) &firstRecord, sizeof(int));
+            inFile.read((char*) &sourcefirstRecord, sizeof(char));
+
+            low = 0;
+            high = this->size - 1;
+            cout << this->size << endl;
+
+            source = 'z';
+            found=false;
+            while(low <= high) {
+                guess = (high +  low) / 2;
+
+                if (guess == 0)
+                    inFile.seekg(this->headerLength);
+                else
+                    inFile.seekg(guess * sizeof(T) + this->headerLength);
+
+                inFile.read((char*) &record, sizeof(T));
+
+                if(record.name == key ) {
+                    source = 'd'; //principal
+                    cout << record.name << " eq " << key << endl;
+                    if (record.next == DELETED_REG)
+                        found=false;
+                    else
+                        found=true;
+
+                    break;
+                }
+
+                if(key > record.name ) {
+                    //Maybe exists in auxiliar file?
+                    if (record.destiny == 'a' ) {
+                        result = findInAuxFile(key, record.next, guess);
+
+                        if (result.second) {
+                            found=true;
+                            source = 'a'; //auxiliar
+                            break;
+                        }
+                    }
+                    low = guess + 1;
+                    cout << low << " " << high << " " << guess << " " << key << " > " << record.name << endl;
+                } else if (key < record.name ) {
+                    if (record.destiny == 'a' ) {
+                        //Maybe exists in auxiliar file?
+                        result = findInAuxFile(key, record.next, guess);
+
+                        if (result.second) {
+                            found=true;
+                            source = 'a'; //auxiliar
+                            break;
+                        }
+                    }
+                    high = guess - 1;
+                    cout << low << " " << high << " " <<  guess << " " << key << " < " << record.name << endl;
+                }
+            }
+            inFile.close();
+        }
+
+        if(!found) {
+            //Maybe is the first logical record in auxiliar file?
+            if ( sourcefirstRecord == 'a') {
+                auxFile.open(this->auxfileName, ios::in);
+
+                if (auxFile.is_open()) {
+                    auxFile.seekg(firstRecord*sizeof(T) + sizeof(int));
+                    auxFile.read((char*) &record, sizeof(T));
+
+                    auxFile.close();
+                }
+
+                if (record.name == key && record.next != DELETED_REG ) {
+                    actualNode = RegPointer(firstRecord, 'a');
+
+                    auto tmp = make_pair(actualNode, prevNode);
+
+                    return make_pair(tmp, true);
+                } else {
+                    auto tmp = make_pair(actualNode, prevNode);
+
+                    return make_pair(tmp, found);
+                }
+            } else {
+                auto tmp = make_pair(actualNode, prevNode);
+
+                return make_pair(tmp, found);
+            }
+        } else {
+            if (source == 'd') {
+                actualNode = RegPointer(guess, source);
+
+                auto tmp = make_pair(actualNode, prevNode);
+
+                return make_pair(tmp, found);
+            } else if (source == 'a') {
+
+                auto resIndex = (result.first).first;
+                actualNode = RegPointer(resIndex, source);
+                prevNode = (result.first).second;
+
+                auto tmp = make_pair(actualNode, prevNode);
+
+                return make_pair(tmp, found);
+            } else {
+                auto tmp = make_pair(actualNode, prevNode);
+
+                return make_pair(tmp, found);
+            }
+        }
+    }
+
     T search(string key) {
         ifstream inFile;
         fstream auxFile;
         T record;
 
         auto result = exists(key);
+        //auto result = exists2(key);
 
         if (result.second) {
             auto tmp = result.first;
@@ -397,6 +535,7 @@ public:
 
     bool delete_key(string key) {
         auto result = exists(key);
+        //auto result = exists2(key);
         auto actualNode = (result.first).first;
         auto prevNode = (result.first).second;
 
@@ -521,7 +660,7 @@ public:
                 inFile.seekg(index * sizeof(T) + this->headerLength);
                 inFile.read((char*) &record, sizeof(T));
 
-                if (record.nombre >= begin && record.nombre <= end ) {
+                if (record.name >= begin && record.name <= end ) {
 
                     result.push_back(record);
                 }
@@ -540,7 +679,7 @@ public:
         bool existFile;
         int offset;
         //logical position to insert
-        auto indexInsert = this->getIndex(record.nombre);
+        auto indexInsert = this->getIndex(record.name);
 
         ifstream filetmp(this->auxfileName);
 
@@ -640,9 +779,9 @@ public:
 
                 inFile.read((char*) &record, sizeof(T));
 
-                if(record.nombre < key) {
+                if(record.name < key) {
                     l = m + 1;
-                } else if (record.nombre > key) {
+                } else if (record.name > key) {
                     u = m - 1;
                 } else {
 
@@ -693,7 +832,7 @@ public:
 
             prevIndex = index__1; //indexAux;
             prevSource = 'd';
-            while(key > record.nombre) {
+            while(key > record.name) {
                 //indexAux = index;
                 if (record.destiny == 'd') {
                     found = false;
@@ -711,7 +850,7 @@ public:
             auxtmp.close();
         }
 
-        if (key == record.nombre)
+        if (key == record.name)
             if (record.next == DELETED_REG)
                 found = false;
             else

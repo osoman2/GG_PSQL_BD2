@@ -32,7 +32,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
         bool existFile;
         int offset;
         //logical position to insert
-        auto indexInsert = this->getIndex(record.nombre);
+        auto indexInsert = this->getIndex(record.name);
 
         ifstream filetmp(this->auxfileName);
 

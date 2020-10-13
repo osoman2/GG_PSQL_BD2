@@ -8,30 +8,30 @@
 #include <iostream>
 #include <vector>
 #include "Graph.h"
-
+#include <semaphore.h>
 
 using namespace std;
 
-typedef void * (*THREADFUNCPTR)(void *);
-
 class Planner {
 public:
+    sem_t db_elements[5]; //resources from data base
+
     string prefix;
     typedef vector<pair<string, string>> operation; //Operation, resource
 
     unordered_map<string, operation> transactions;
 
-    graph *precedence;
+    graph precedence;
     bool print;
 
     Planner() {
         this->prefix = "T";
-        precedence = new graph(true);
+        precedence = graph(true);
         print = false;
     }
 
     void* execute(void *){
-        cout << "Task :: execute from Thread ID : " << std::endl;
+        cout << "TestPlanner2 :: execute from Thread ID : " << std::endl;
         return NULL;
     }
 
@@ -39,7 +39,7 @@ public:
         auto str_id = this->prefix + to_string(id);
         transactions[str_id];
 
-        precedence->addVertex(str_id, 0, 0);
+        precedence.addVertex(str_id, 0, 0);
     }
 
     void read(int id, string resource) {
@@ -65,10 +65,10 @@ public:
     }
 
     bool isSerializable() {
-        return !precedence->is_cyclic();
+        return !precedence.is_cyclic();
     }
     void showPrecedenceGraph() {
-        precedence->printGraph();
+        precedence.printGraph();
     }
 
 private:
@@ -88,8 +88,8 @@ private:
 
                 for(auto itOpe=operations.rbegin() ; itOpe != operations.rend() ; ++itOpe)
                     if(itOpe->first == ope_str && itOpe->second == resource) {
-                        if (!precedence->findEdge(to_id, from_id, resource))
-                            precedence->addEdge(to_id, from_id, 0, resource);
+                        if (!precedence.findEdge(to_id, from_id, resource))
+                            precedence.addEdge(to_id, from_id, 0, resource);
                     }
             }
         }
@@ -97,7 +97,7 @@ private:
 
 public:
     ~Planner() {
-        delete precedence;
+        //delete precedence;
     }
 };
 

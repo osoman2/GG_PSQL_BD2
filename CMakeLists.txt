@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(GG_PSQL_BD2)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS -pthread)
 
 include_directories(Components)
 include_directories(Controller)
@@ -11,6 +12,7 @@ include_directories(data)
 add_executable(GG_PSQL_BD2
         Components/SequentialFile.h
         Components/Alumno.h
+        Components/Game.h
         Testcases/TestSequential.h
         main.cpp
         Components/Sql.h

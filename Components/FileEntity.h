@@ -6,6 +6,8 @@
 #define GG_PSQL_BD2_FILEENTITY_H
 
 #include <iostream>
+#include <iomanip>
+const char* sep = "|";
 
 static int NOT_FOUND = -7;
 
