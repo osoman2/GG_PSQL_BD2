@@ -200,18 +200,29 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
 ### Extendible Hashing
 Lo definimos como un hash dinámico para gestionar grandes base de datos y que reducen su tamaño en el tiempo (transaccionales). Estos indexan los registros en una tabla de direcciones de buckets usando un prefijo/sufijo.
   * Inserción
-  Lozalizamos el bucket usando la secuencia D-bit. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
+  Lozalizamos el bucket usando la secuencia D-peso, que utiliza la equivalencia de la palabra en ASCII y la profundidad. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
   En caso no se pueda incrementar la profundidad, ocurre un desbordamiento.
   ```
   ```
   
   * Eliminación
-  Localizar el bucket respectivo mediante el índice y remover el registro. Si el bucket queda vacío, puede sr liberado, lo que implica actualizar el índice. Por otro lado, si dos buckets quedan con pocos elementos y tienen el mismo prefijo en la profundida local anterior, procedemos a mezclarlos, lo que implica actualizar el índice nuevamente.
+  El algoritmo de eliminación Localizar el bucket respectivo mediante el índice y remueve utilizando la técnica de FreeList. Cuando el tamaño del Bucket sea 0, los indices serán alterados.
   ```
   ```
   
   * Búsqueda
-  Hacemos coincidir la secuencia D-bit con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
+  Hacemos coincidir la secuencia D-peso con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
+  ```
+  ```
+  
+  * Añadidos-FreeList
+  En cada bucket, se utiliza una técnica de FreeList, asegurando el proceso de inserción y eliminación en complejidad    O(1) asegurando un buen desempeño a nivel lógico, a cambio se creará un campo en los registros que contenga el atributo next_del,y un header que apunte a la posición disponible. 
+  ```
+  ```
+  
+  * Límites
+  - En la eliminación, dado el caso con 2 o más buckets con un tamaño menor al permitido, no se realiza el merge.
+  - La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
   ```
   ```
   
