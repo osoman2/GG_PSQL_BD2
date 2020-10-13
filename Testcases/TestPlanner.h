@@ -148,12 +148,31 @@ public:
         return NULL;
     }
 
+    void * t1_exe_plan() {
+        //this->plan.show_operations(1);
+        this->plan.exe_plan(1);
+    }
+
+    void * t2_exe_plan() {
+        //this->plan.show_operations(2);
+        this->plan.exe_plan(2);
+    }
+
+    void * t3_exe_plan() {
+        //this->plan.show_operations(3);
+        this->plan.exe_plan(3);
+    }
+
     bool isSerializable() {
         return this->plan.isSerializable();
     }
 
     void show_graph() {
         this->plan.showPrecedenceGraph();
+    }
+
+    void show_resources() {
+        this->plan.showResource();
     }
 
 };
@@ -204,10 +223,26 @@ public:
             return err;
 
         testPlan->show_graph();
-        delete testPlan;
+        //testPlan->show_resources();
 
         auto res = (testPlan->isSerializable()) ? "Yes" : "No";
         cout << "Serializable " << res <<endl;
+
+        pthread_t threadExe1;
+        pthread_t threadExe2;
+        pthread_t threadExe3;
+
+        err = pthread_create(&threadExe1, NULL, (THREADFUNCPTR) &TestPlanner2::t1_exe_plan, testPlan);
+
+        err = pthread_create(&threadExe2, NULL, (THREADFUNCPTR) &TestPlanner2::t2_exe_plan, testPlan);
+
+        err = pthread_create(&threadExe3, NULL, (THREADFUNCPTR) &TestPlanner2::t3_exe_plan, testPlan);
+
+        pthread_join(threadExe1, NULL);
+        pthread_join(threadExe2, NULL);
+        pthread_join(threadExe3, NULL);
+
+        delete testPlan;
 
         std::cout << "Exiting Main" << std::endl;
     }

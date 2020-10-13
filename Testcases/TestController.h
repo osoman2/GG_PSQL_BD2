@@ -7,6 +7,9 @@
 
 #include "../Controller/AppController.h"
 #include "../Components/Sql.h"
+#include <time.h>
+
+double gettime();
 
 class TestController {
 public:
@@ -19,7 +22,10 @@ public:
         //lines.push_back("SELECT * FROM " + filename);
         //lines.push_back("DELETE FROM "+filename+" WHERE name = \"Jacqueline\"");
         //lines.push_back("SELECT * FROM " + filename);
+
         lines.push_back("SELECT * FROM "+filename+" WHERE name = \"Osman\"");
+
+
         //lines.push_back("SELECT * FROM " + filename);
 
         app.run(lines);
@@ -29,10 +35,15 @@ public:
     static void testRunGames(string filename) {
         vector<string> lines;
         AppController<Game> app;
+        double actualtime;
+        double timespent;
 
-        lines.push_back("SELECT * FROM " + filename + " WHERE name = \"Dota 2\"");
+        actualtime = gettime();
+        //lines.push_back("SELECT * FROM " + filename + " WHERE name = \"Dota 2\"");
         //lines.push_back("DELETE FROM "+filename+" WHERE name = \"Dota 2\"");
-        //lines.push_back("SELECT * FROM " + filename);
+        lines.push_back("SELECT * FROM " + filename);
+        //timespent = gettime() - actualtime;
+        //printf("Time %.7f\n", timespent);
 
         app.run(lines);
     }
@@ -65,5 +76,10 @@ public:
 //    }
 };
 
+double gettime() {
+    struct timespec now;
+    clock_gettime(CLOCK_REALTIME, &now);
+    return now.tv_sec + now.tv_nsec*1e-9;
+}
 
 #endif //GG_PSQL_BD2_TESTCONTROLLER_H

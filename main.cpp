@@ -7,9 +7,8 @@ int main() {
     //TestController::testRun(filename);
     //testLoad_add_Alumno(filename);
     //TestPlanner::serializableTest();
-    TestConcurrency::run();
+    //TestConcurrency::run();
     string filenameGames = "../data/gamesfullv2.dat";
-    //testLoad_add_Gamesfull(filenameGames);
-    //testLoad_add_Games2(filenameGames);
-    //TestController::testRunGames(filenameGames);
+    //testLoad_add_Games5k(filenameGames, 1000);
+    TestController::testRunGames(filenameGames);
 }
