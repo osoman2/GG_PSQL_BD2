@@ -351,9 +351,36 @@ Y graficamente se puede apreciar una curva logarítmica.
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
 ### Consola
 ### QT
-Realizamos una interace para presentar la tabla de datos usando ambas técnicas y con una actualización de la tabla en tiempo real para cada una de las operaciones.
+Realizamos una interface para presentar la tabla de datos usando ambas técnicas y con una actualización de la tabla en tiempo real para cada una de las operaciones.
+
+Tenemos el MainWindow, que es la ventana principal del SGBD, en donde se va a elegir entre las técnicas de Sequential File y Extendible Hashing.
+
+```
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    sequentialwindow seqWindow;
+    seqWindow.setModal(true);
+    seqWindow.exec();
+}
+```
+
+![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/qtSGBD.png)
 
 Hacemos uso de una clase TestController para hacer las operaciones mediante consultas parseadas que se asemejen a un SGBD real. En cada una el usuario puede ingresar los datos del registro que quiere añadir, borrar o buscar y la tabla se actualizará apenas se completa la operación.
+
 ```
 class TestController {
 public:
@@ -404,10 +431,13 @@ public:
 
 Por otro lado, tenemos el SequentialWindow, la ventana encargada de hacer las operaciones del Sequential File. Lo que hace es cargar una data inicial a alumnos.txt y leer un archivo output.txt creado a partir de otros archivos (Alumno.txt y auxfile.txt) en donde se realizan las operaciones. Al modificar los archivos alumno y auxfile, se copiarán los datos al output en un formato con divisiones '|' y este es leído para ser colocado en un TableView.
 
+
+![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/qtSeq.png)
+
 ```
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+sequentialwindow::sequentialwindow(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::sequentialwindow)
 {
     ui->setupUi(this);
     csvModel = new QStandardItemModel(this);
@@ -417,10 +447,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->outputNombre->setText("");
     ui->outputCarrera->setText("");
     ui->OuputCiclo->setText("");
-
 }
 
-void MainWindow::setValueAt(int ix, int jx, const QString &value)
+void sequentialwindow::setValueAt(int ix, int jx, const QString &value)
 {
     if(!csvModel->item(ix, jx)){
         csvModel->setItem(ix, jx, new QStandardItem(value));
@@ -429,19 +458,18 @@ void MainWindow::setValueAt(int ix, int jx, const QString &value)
     }
 }
 
-MainWindow::~MainWindow()
+sequentialwindow::~sequentialwindow()
 {
     delete ui;
 }
 
-
-void MainWindow::on_pushButton_clicked()
+void sequentialwindow::on_pushButton_clicked()
 {
-    TestController::testRun("/home/theflilux/qtSequentialFile/Alumno.txt");
-    MainWindow::on_pushButton_5_clicked();
+    TestController::testRun("/home/theflilux/BD-P1-intent2/Alumno.txt");
+    sequentialwindow::on_pushButton_5_clicked();
 }
 
-void MainWindow::on_pushButton_ADD_clicked()
+void sequentialwindow::on_pushButton_ADD_clicked()
 {
     QString inputCodigo = QInputDialog::getText(this,"CODIGO","Ingrese su codigo: ");
     ui->outputCodigo->setText(inputCodigo);
@@ -456,13 +484,13 @@ void MainWindow::on_pushButton_ADD_clicked()
     std::string utf8_inputCodigo = inputCodigo.toUtf8().constData();
     std::string utf8_inputNombre = inputNombre.toUtf8().constData();
     std::string utf8_inputCarrera = inputCarrera.toUtf8().constData();
-    TestController::testRunAdd("/home/theflilux/qtSequentialFile/Alumno.txt", utf8_inputCodigo, utf8_inputNombre, utf8_inputCarrera, inputCiclo);
-    MainWindow::on_pushButton_5_clicked();
+    TestController::testRunAdd("/home/theflilux/BD-P1-intent2/Alumno.txt", utf8_inputCodigo, utf8_inputNombre, utf8_inputCarrera, inputCiclo);
+    sequentialwindow::on_pushButton_5_clicked();
 }
 
-void MainWindow::on_pushButton_5_clicked()
+void sequentialwindow::on_pushButton_5_clicked()
 {
-    QFile file("/home/theflilux/qtSequentialFile/output.txt");
+    QFile file("/home/theflilux/BD-P1-intent2/output.txt");
     if ( !file.open(QFile::ReadOnly | QFile::Text) ) {
         qDebug() << "El archivo no existe";
     } else {
@@ -487,30 +515,29 @@ void MainWindow::on_pushButton_5_clicked()
     }
 }
 
-void MainWindow::on_pushButton_6_clicked()
+void sequentialwindow::on_pushButton_6_clicked()
 {
-    testLoad_add_Alumno("/home/theflilux/qtSequentialFile/Alumno.txt");
-    MainWindow::on_pushButton_clicked();
+    testLoad_add_Alumno("/home/theflilux/BD-P1-intent2/Alumno.txt");
+    sequentialwindow::on_pushButton_clicked();
 }
 
-void MainWindow::on_pushButton_7_clicked()
+void sequentialwindow::on_pushButton_7_clicked()
 {
     QString inputNombre = QInputDialog::getText(this,"NOMBRE","Ingrese su nombre: ");
     ui->outputNombre->setText(inputNombre);
     std::string utf8_inputNombre = inputNombre.toUtf8().constData();
-    TestController::testRunDelete("/home/theflilux/qtSequentialFile/Alumno.txt", utf8_inputNombre);
-    MainWindow::on_pushButton_5_clicked();
+    TestController::testRunDelete("/home/theflilux/BD-P1-intent2/Alumno.txt", utf8_inputNombre);
+    sequentialwindow::on_pushButton_5_clicked();
 }
 
-void MainWindow::on_pushButton_8_clicked()
+void sequentialwindow::on_pushButton_8_clicked()
 {
     QString inputNombre = QInputDialog::getText(this,"NOMBRE","Ingrese su nombre: ");
     ui->outputNombre->setText(inputNombre);
     std::string utf8_inputNombre = inputNombre.toUtf8().constData();
-    TestController::testRunSearch("/home/theflilux/qtSequentialFile/Alumno.txt", utf8_inputNombre);
-    MainWindow::on_pushButton_5_clicked();
+    TestController::testRunSearch("/home/theflilux/BD-P1-intent2/Alumno.txt", utf8_inputNombre);
+    sequentialwindow::on_pushButton_5_clicked();
 }
 ```
-Finalmente tenemos el MainWindow, que es la ventana principal del SGBD, en donde se va a elegir entre las técnicas de Sequential File y Extendible Hashing.
 
 ## Video
