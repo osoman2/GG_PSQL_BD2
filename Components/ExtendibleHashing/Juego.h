@@ -8,8 +8,8 @@ class Juego{
     char id[10]="";
     char name[15]="";
     char description[100]="";
-    int next_del=0;
-    int HorasJugadas=10;
+    int next_del=-2;
+    int HorasJugadas=0;
 
    
 
@@ -29,6 +29,7 @@ class Juego{
         cout<<"Nombre: "<<name<<"\n";
         cout<<"Descripción: "<<description<<"\n";
         cout<<"Horas jugadas: "<<HorasJugadas<<"\n";
+        cout<<"Next del: "<<next_del<<"\n";
     }
   //  ~Juego(){};
 

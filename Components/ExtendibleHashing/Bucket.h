@@ -12,59 +12,84 @@ class Bucket{
         Juego juegos[TAM_MAX];
         //vector<Juego> juegos;
        
+        vector<Juego> return_vect_juegos_lleno(){
+            vector<Juego>res;
+            iter(i,0,TAM_MAX){
+                res.push_back(juegos[i]);
+            }
+            return res;
+        }
+        void clear_bucket_lleno(){
+            tam_act = 0;next_del=-1;
+            iter(i,0,TAM_MAX){
+                Juego aux;
+                aux = juegos[i];
+                aux.next_del = -2;
+            }
+        }
+
+
         void show_back_content(){
             if(tam_act==0){
                 cout<<"\nBuck is empty\n";
             }
             else{
+                cout<<"\n---------------------------------------------------";
                 cout<<"\ntamanho: "<<tam_act<<" next_del: "<<next_del;
-                iter(i,0,tam_act){
-                    juegos[i].show_value();
+                iter(i,0,TAM_MAX){
+                    if(juegos[i].next_del>=-1){
+                        juegos[i].show_value();
+                    }
                 }
+                cout<<"---------------------------------------------------";
             }    
         }
 
         Juego find(char* key){           
-            iter(i,0,tam_act){
-
-                if(!strcmp(juegos[i].name,key)){
-                    if(juegos[i].next_del!=-2){   
+            iter(i,0,TAM_MAX){
+                if(juegos[i].next_del==0){
+                    if(!strcmp(juegos[i].name,key)){   
                         return juegos[i];
                     }
                 }
-        
             }
         }
 
         bool eliminate(char* key){
             int aux_tam = tam_act-1;
             if(next_del==-1&&aux_tam>=0){
-                iter(i,0,tam_act){
-                    if(juegos[i].name==key){
+                iter(i,0,TAM_MAX){
+                    if(juegos[i].next_del==0){
+                        if(!strcmp(juegos[i].name,key)){
                         next_del = i+1;
                         juegos[i].next_del=-1;
                         tam_act--;
                         return true;
-                    }    
+                        }    
+                    }
                 }
+                cout<<"No se encuentra el registro para eliminar";
+                return true;
             }
           
             else if(aux_tam>=0){
-                iter(i,0,tam_act){
-                    if(juegos[i].name==key){
-                        if(juegos[i].next_del==0){
+                iter(i,0,TAM_MAX){
+                    if(juegos[i].next_del==0){
+                        if(!strcmp(juegos[i].name,key)){
                             juegos[i].next_del = next_del;
                             next_del = i+1;
+                            tam_act--;
+                            return true;
                         }
-                        return true;
                     }    
                 }
+                return true;
             }
-            return false;
+            return false; //en caso de quedar en 0;
         }
 
         bool add_toBucket(Juego juego){//agregar un registro si este tiene espacio
-            int aux_tam = tam_act;
+            int aux_tam = tam_act;juego.next_del=0;
             if(next_del==-1&&aux_tam+1<=TAM_MAX){
                 juegos[tam_act]=juego;
                 tam_act++;
@@ -72,8 +97,8 @@ class Bucket{
             }
             else if(aux_tam+1<=TAM_MAX){
                 int aux2 = juegos[next_del-1].next_del;
-                juegos[aux2-1].next_del = -1;
                 juegos[next_del-1]=juego;
+                next_del = aux2;
                 tam_act++;
                 return true;
             }
@@ -93,14 +118,13 @@ ofstream& operator<< (ofstream& stream, Bucket& bucket){
         }    
     }
     else{
-        iter(i,0,bucket.tam_act){
-            stream.write((char*)&bucket.juegos[i],sizeof(Juego));
+        iter(i,0,TAM_MAX){
+                stream.write((char*)&bucket.juegos[i],sizeof(Juego));
         }
-        iter(i,0,TAM_MAX - bucket.tam_act){
+       /* iter(i,0,TAM_MAX - bucket.tam_act){
             Juego defaultgame;
-            defaultgame.next_del = -2;
             stream.write((char*)&defaultgame,sizeof(defaultgame));
-        }
+        }*/
     }
 
 	stream<< flush;
@@ -113,7 +137,7 @@ ifstream& operator>> (ifstream& stream, Bucket& bucket)
 	stream.read((char*)&bucket.next_del,sizeof(int));
 	//stream.get(); 
 	
-    iter(i,0,bucket.tam_act){
+    iter(i,0,TAM_MAX){
         Juego aux;
         stream.read((char*)&aux,sizeof(Juego));
         bucket.juegos[i]= aux;
