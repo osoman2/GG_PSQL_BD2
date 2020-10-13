@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Base de Datos 2: Proyecto 1
 
 Integrantes:
@@ -633,7 +632,9 @@ public:
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
 ### Consola
 ### QT
+Realizamos una interace para presentar la tabla de datos usando ambas técnicas y con una actualización de la tabla en tiempo real para cada una de las operaciones.
 
+Hacemos uso de una clase TestController para hacer las operaciones mediante consultas parseadas que se asemejen a un SGBD real. En cada una el usuario puede ingresar los datos del registro que quiere añadir, borrar o buscar y la tabla se actualizará apenas se completa la operación.
 ```
 class TestController {
 public:
@@ -682,7 +683,7 @@ public:
 };
 ```
 
-
+Por otro lado, tenemos el SequentialWindow, la ventana encargada de hacer las operaciones del Sequential File. Lo que hace es cargar una data inicial a alumnos.txt y leer un archivo output.txt creado a partir de otros archivos (Alumno.txt y auxfile.txt) en donde se realizan las operaciones. Al modificar los archivos alumno y auxfile, se copiarán los datos al output en un formato con divisiones '|' y este es leído para ser colocado en un TableView.
 
 ```
 MainWindow::MainWindow(QWidget *parent)
@@ -791,8 +792,6 @@ void MainWindow::on_pushButton_8_clicked()
     MainWindow::on_pushButton_5_clicked();
 }
 ```
+Finalmente tenemos el MainWindow, que es la ventana principal del SGBD, en donde se va a elegir entre las técnicas de Sequential File y Extendible Hashing.
 
 ## Video
-
-
->>>>>>> 5ffa58ef0dc3714661716b63c489a815ba7b89a8
