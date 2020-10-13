@@ -8,6 +8,7 @@
 #include <Planner.h>
 #include <iostream>
 #include <pthread.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -115,34 +116,40 @@ public:
 
     void * t1_before_plan() {
 //    cout << "TestPlanner2 :: execute from Transaction 1 " << pthread_self()
-        cout << "TestPlanner2 :: execute from Transaction 1 " << endl;
+        cout << "Executed from Transaction 1 " << endl;
         this->plan.addTransaction(1);
         this->plan.read(1, "Y");
+        //sleep(2); //do something with Y
         this->plan.write(1, "Y");
         this->plan.read(1, "X");
+        //sleep(2); //do something with X
         this->plan.write(1, "X");
 
         return NULL;
     }
 
     void * t2_before_plan(){
-        cout << "TestPlanner2 :: execute from Transaction 2 " << endl;
+        cout << "Executed from Transaction 2 " << endl;
         this->plan.addTransaction(2);
         this->plan.read(2, "Z");
         this->plan.read(2, "Y");
+        //sleep(1); //do something with Y
         this->plan.write(2, "Y");
         this->plan.read(2, "X");
+        //sleep(2); //do something with X
         this->plan.write(2, "X");
 
         return NULL;
     }
 
     void * t3_before_plan() {
-        cout << "TestPlanner2 :: execute from Transaction 3 " << endl;
+        cout << "Executed from Transaction 3 " << endl;
         this->plan.addTransaction(3);
         this->plan.read(3, "Y");
+        //sleep(2); //do something with Y
         this->plan.read(3, "Z");
         this->plan.write(3, "Y");
+        //sleep(1); //do something with Z
         this->plan.write(3, "Z");
 
         return NULL;
@@ -207,44 +214,44 @@ public:
         }
 
         // Do some stuff in Main Thread
-        std::cout << "Waiting for thread " << threadId1 << " to exit" << std::endl;
+        //std::cout << "Waiting for thread " << threadId1 << " to exit" << std::endl;
         err = pthread_join(threadId1, NULL);
         if (err)
             return err;
 
-        std::cout << "Waiting for thread " << threadId2 << " to exit" << std::endl;
+        //std::cout << "Waiting for thread " << threadId2 << " to exit" << std::endl;
         err = pthread_join(threadId2, NULL);
         if (err)
             return err;
 
-        std::cout << "Waiting for thread " << threadId3 << " to exit" << std::endl;
+        //cout << "Waiting for thread " << threadId3 << " to exit" << std::endl;
         err = pthread_join(threadId3, NULL);
         if (err)
             return err;
 
+        cout << "Precedence graph " << endl;
         testPlan->show_graph();
         //testPlan->show_resources();
 
         auto res = (testPlan->isSerializable()) ? "Yes" : "No";
-        cout << "Serializable " << res <<endl;
+        cout << "Is serializable? " << res <<endl;
 
         pthread_t threadExe1;
         pthread_t threadExe2;
         pthread_t threadExe3;
-
         err = pthread_create(&threadExe1, NULL, (THREADFUNCPTR) &TestPlanner2::t1_exe_plan, testPlan);
-
         err = pthread_create(&threadExe2, NULL, (THREADFUNCPTR) &TestPlanner2::t2_exe_plan, testPlan);
-
         err = pthread_create(&threadExe3, NULL, (THREADFUNCPTR) &TestPlanner2::t3_exe_plan, testPlan);
 
-        pthread_join(threadExe1, NULL);
+        cout <<endl;
+        cout << "Equivalent plan" <<endl;
         pthread_join(threadExe2, NULL);
+        pthread_join(threadExe1, NULL);
         pthread_join(threadExe3, NULL);
 
         delete testPlan;
 
-        std::cout << "Exiting Main" << std::endl;
+        std::cout << "Finish" << std::endl;
     }
 };
 #endif //GG_PSQL_BD2_TESTPLANNER_H
