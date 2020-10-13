@@ -201,30 +201,79 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
 Lo definimos como un hash dinámico para gestionar grandes base de datos y que reducen su tamaño en el tiempo (transaccionales). Estos indexan los registros en una tabla de direcciones de buckets usando un prefijo/sufijo.
   * Inserción
   Lozalizamos el bucket usando la secuencia D-peso, que utiliza la equivalencia de la palabra en ASCII y la profundidad. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
-  En caso no se pueda incrementar la profundidad, ocurre un desbordamiento.
-  ```
-  ```
+```
+void add(Juego juego){
+            int posiaux = hashf(juego.name);
+            fstream archi;
+            archi.open(data_name,fstream::out|fstream::in|fstream::binary);
+            archi.seekg(posiaux);
+
+
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            
+
+            if(buck.add_toBucket(juego)){
+                archi.seekp(posiaux);
+                archi.write((char*)&buck,sizeof(Bucket));
+                archi.close();
+            }
+            else{
+                archi.close();                
+                split(juego.name,juego);
+            }
+}
+
+```
   
   * Eliminación
   El algoritmo de eliminación Localizar el bucket respectivo mediante el índice y remueve utilizando la técnica de FreeList. Cuando el tamaño del Bucket sea 0, los indices serán alterados.
   ```
+  void delete_element(char* key){
+            int posiaux = hashf(key);
+            fstream archi;
+            archi.open(data_name,fstream::out|fstream::in|fstream::binary);
+            archi.seekg(posiaux);
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            
+            
+            if(buck.eliminate(key)){
+                archi.seekp(posiaux);
+                archi.write((char*)&buck,sizeof(Bucket));
+                archi.close();
+            }
+            else{
+                cout<<"El bucket ya está vacío\n";
+            }
+        }
   ```
   
   * Búsqueda
   Hacemos coincidir la secuencia D-peso con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
   ```
+    Juego search(char* key){
+            int posiaux = hashf(key);
+            ifstream archi;
+            archi.open(data_name,ifstream::in|ifstream::binary);
+            archi.seekg(posiaux);
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            archi.close();
+            return buck.find(key);
+    }
+  
   ```
   
   * Añadidos-FreeList
-  En cada bucket, se utiliza una técnica de FreeList, asegurando el proceso de inserción y eliminación en complejidad    O(1) asegurando un buen desempeño a nivel lógico, a cambio se creará un campo en los registros que contenga el atributo next_del,y un header que apunte a la posición disponible. 
-  ```
-  ```
+      En cada bucket, se utiliza una técnica de FreeList, asegurando el proceso de inserción y eliminación en complejidad    O(1) asegurando un buen desempeño a nivel lógico, a cambio se creará un campo en los registros que contenga el atributo next_del,y un header que apunte a la posición disponible. 
+
   
   * Límites
-  - En la eliminación, dado el caso con 2 o más buckets con un tamaño menor al permitido, no se realiza el merge.
-  - La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
-  ```
-  ```
+      * En la eliminación, dado el caso con 2 o más buckets con un tamaño menor al permitido, no se realiza el merge.
+      * La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
+      * El desbordamiento no es mapeado debido a que no se  
+ 
   
 ### Transacciones
 Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.
