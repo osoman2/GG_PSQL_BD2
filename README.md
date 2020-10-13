@@ -19,7 +19,7 @@ Los resultados esperados para este proyecto es poder realizar satisfactoriamente
 ### Sequential FIle
 Lo definimos como un archivo que mantiene los registros ordenados fisicamente en base al valor de alguno de sus campos. Este nos permite tener búsquedas eficientes. Sin embargo, son dificiles de mantener y generan un costo extra a la hora de reorganizar el archivo.
 
-  * Inserción
+  * Inserción:
   Localizamos la posición en donde será insertado el nuevo registro. Si el espacio esta libre, lo insertamos. De lo contrario, insertamos un registro en un espacio auxiliar y los actualizamos los punteros.
   
   ```
@@ -109,7 +109,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
     }
   ```
   
-  * Eliminación
+  * Eliminación:
   Utilizamos los punteros para saltar las tuplas eliminadas hasta llegar al registro que queremos eliminar.
   
   ```
@@ -142,7 +142,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
     }
   ```
   
-  * Búsqueda
+  * Búsqueda:
   Usamos un algoritmo de busqueda binaria para llegar al registro que queremos buscar.
   
   ```
@@ -199,7 +199,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
   
 ### Extendible Hashing
 Lo definimos como un hash dinámico para gestionar grandes base de datos y que reducen su tamaño en el tiempo (transaccionales). Estos indexan los registros en una tabla de direcciones de buckets usando un prefijo/sufijo.
-  * Inserción
+  * Inserción:
   Lozalizamos el bucket usando la secuencia D-peso, que utiliza la equivalencia de la palabra en ASCII y la profundidad. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
 ```
 void add(Juego juego){
@@ -226,7 +226,7 @@ void add(Juego juego){
 
 ```
   
-  * Eliminación
+  * Eliminación:
   El algoritmo de eliminación Localizar el bucket respectivo mediante el índice y remueve utilizando la técnica de FreeList. Cuando el tamaño del Bucket sea 0, los indices serán alterados.
   ```
   void delete_element(char* key){
@@ -249,7 +249,7 @@ void add(Juego juego){
         }
   ```
   
-  * Búsqueda
+  * Búsqueda:
   Hacemos coincidir la secuencia D-peso con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
   ```
     Juego search(char* key){
@@ -265,7 +265,7 @@ void add(Juego juego){
   
   ```
   
-  * Añadidos-FreeList
+  * Añadidos-FreeList:
       En cada bucket, se utiliza una técnica de FreeList, asegurando el proceso de inserción y eliminación en complejidad    O(1) asegurando un buen desempeño a nivel lógico, a cambio se creará un campo en los registros que contenga el atributo next_del,y un header que apunte a la posición disponible. 
 
   
