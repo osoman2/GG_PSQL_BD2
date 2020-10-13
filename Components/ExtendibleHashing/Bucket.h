@@ -23,8 +23,7 @@ class Bucket{
             tam_act = 0;next_del=-1;
             iter(i,0,TAM_MAX){
                 Juego aux;
-                aux = juegos[i];
-                aux.next_del = -2;
+                juegos[i]=aux;
             }
         }
 
@@ -53,6 +52,10 @@ class Bucket{
                     }
                 }
             }
+            cout<<"\nNo hay el registro";
+            Juego aux_nohay;
+            strcpy(aux_nohay.name,key);
+            return aux_nohay;
         }
 
         bool eliminate(char* key){
@@ -121,10 +124,6 @@ ofstream& operator<< (ofstream& stream, Bucket& bucket){
         iter(i,0,TAM_MAX){
                 stream.write((char*)&bucket.juegos[i],sizeof(Juego));
         }
-       /* iter(i,0,TAM_MAX - bucket.tam_act){
-            Juego defaultgame;
-            stream.write((char*)&defaultgame,sizeof(defaultgame));
-        }*/
     }
 
 	stream<< flush;

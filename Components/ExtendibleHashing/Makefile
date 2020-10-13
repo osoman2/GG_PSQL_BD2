@@ -3,7 +3,7 @@ CXX = -g++
 CXXFLAG = -pedantic-errors -Wall -Wextra -Werror
 
 all: main
-	./main.o
+	./main.o < prueba.txt
 
 main: 
 	$(CXX) -o main.o main.cpp

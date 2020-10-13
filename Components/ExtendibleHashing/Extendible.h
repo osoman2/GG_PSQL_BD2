@@ -16,6 +16,11 @@ class ExtendibleHash{
         vector<pair<int,pair<int,int>>>llave_posi; //<llave-posición de bucket>
 
     public:
+        void show_hash(){
+            for(auto it:llave_posi){
+                cout<<"p_hash: "<<it.first<<" p_dat: "<<it.second.first<<" l_desnsity: "<<it.second.second<<"\n";
+            }
+        }
         ExtendibleHash(string _data,string _index){
             data_name = _data;
             index_name = _index;
@@ -31,7 +36,8 @@ class ExtendibleHash{
                 indi.write((char*)&TAM_MAX,sizeof(int));
                 indi.write((char*)&buckets_actual,sizeof(int));
                 
-                int aux_key,aux_posi=0;
+                int aux_key = 0;
+                int aux_posi=0;
                 int aux_locald = 1;
                 indi.write((char*)&aux_key,sizeof(int));
                 indi.write((char*)&aux_posi,sizeof(int));
@@ -110,11 +116,15 @@ class ExtendibleHash{
             return buck.find(key);
         }
 
-        void split(char* key){
+        void split(char* key,Juego juego){
             int val_key = val_string(key);            
+            cout<<"valkey "<<val_key<<key;
             int llave_posi_hash = val_key % (int)pow(2,GlobalDensity);
-            int local_dens = llave_posi[llave_posi_hash].second.second; 
+            cout<<" posi: "<<llave_posi_hash;
+            int local_dens = llave_posi[llave_posi_hash].second.second;
+             cout<<" ldens: "<<local_dens<<"\n";
             int posi_buxk_dat = hashf(key);
+            llave_posi[llave_posi_hash].second.second++;//aumentando densidad local del buck principal
             Bucket bucket_lleno;
             fstream datos; datos.open(data_name,fstream::in|fstream::out|fstream::binary);
             datos.seekg(posi_buxk_dat);
@@ -128,13 +138,15 @@ class ExtendibleHash{
                         posi_currents_buck.push_back(it.first);
                     }
                 }
-                llave_posi[llave_posi_hash].second.second++; //aumentando densidad local del buck principal
-
-
+                
                 //Reasignando las posiciones de los overflow y cambiando el tamaño de buckets actuales
                 for(auto it:posi_currents_buck){
                     llave_posi[it].second.first = buckets_actual;
                     llave_posi[it].second.second++;
+                    Bucket buckaux;
+                    buckaux.next_del = -1;
+                    datos.seekp((buckets_actual)*sizeof(Bucket));
+                    datos.write((char*)&buckaux,sizeof(Bucket));
                     buckets_actual++;
                 }
                 
@@ -149,17 +161,21 @@ class ExtendibleHash{
                 
                 datos.close();
 
-                //Inserto todo en los nuevos buckets
-                insert_all(copia_vec);
-
                 //actualizo los indices del archivo indi.dat
                 update_ind();
+                //Inserto todo en los nuevos buckets
+                add(juego);
+                insert_all(copia_vec);
+
+               
 
             }
             else{
                 vector<int> posi_currents_buck;
                 for(auto it:llave_posi){
                     if( (it.first!=llave_posi_hash) && (it.second.first==llave_posi[llave_posi_hash].second.first)){
+                        cout<<"posi hash original: "<<llave_posi_hash;
+                        cout<<" posi en ind: "<<it.first<<" posi en dat: "<<it.second.first;
                         posi_currents_buck.push_back(it.first);
                     }
                 }                
@@ -167,13 +183,28 @@ class ExtendibleHash{
                 for(auto it:posi_currents_buck){
                     llave_posi[it].second.first = buckets_actual;
                     llave_posi[it].second.second++;
+                    Bucket buckaux;
+                    buckaux.next_del = -1;
+                    datos.seekp((buckets_actual)*sizeof(Bucket));
+                    datos.write((char*)&buckaux,sizeof(Bucket));
                     buckets_actual++;
                 }
 
+                //Creando nuevas entradas para los nuevos niveles
                 iter(i,pow(2,GlobalDensity),pow(2,GlobalDensity+1)){
                     int posi_de_hash = i;  
                     int pos_de_dat = llave_posi[ i-pow(2,GlobalDensity)].second.first;
                     int densi_nuevo = llave_posi[i-pow(2,GlobalDensity)].second.second;     
+                    //nuevos buckets en dat
+                    if((i-pow(2,GlobalDensity))==llave_posi_hash){
+                        Bucket buckaux;
+                        buckaux.next_del = -1;
+                        cout<<"posi_nuevo_buck"<<buckets_actual<<"\n";
+                        pos_de_dat = buckets_actual; 
+                        datos.seekp((buckets_actual)*sizeof(Bucket));
+                        datos.write((char*)&buckaux,sizeof(Bucket));
+                        buckets_actual++; 
+                    }
                     llave_posi.push_back({posi_de_hash,{pos_de_dat,densi_nuevo}});
                 }
                 GlobalDensity++;
@@ -189,10 +220,11 @@ class ExtendibleHash{
                 datos.write((char*)&bucket_lleno,sizeof(Bucket));
                 datos.close();
                 
+                update_ind();
                 //Inserto todo en los nuevos buckets
+                add(juego);
                 insert_all(copia_vec);
                 //actualizo los indices del archivo indi.dat
-                update_ind();
             }
         }
 
@@ -234,8 +266,7 @@ class ExtendibleHash{
             }
             else{
                 archi.close();                
-                split(juego.name);
-                add(juego);
+                split(juego.name,juego);
             }
         }
 
