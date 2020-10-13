@@ -333,8 +333,9 @@ Y graficamente se puede apreciar una curva logarítmica.
 |    5000   |        5.2000        |
 
    Y graficamente se puede apreciar.
+  ![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/01seqfile_insert.png)
   
-   Los tiempos para la inserción registrados son:  
+   Los tiempos para la eliminacion registrados son:  
    
 | Registros | Tiempo Promedio (μs) |
 |:---------:|:--------------------:|
@@ -343,8 +344,9 @@ Y graficamente se puede apreciar una curva logarítmica.
 |    1500   |        5.2000        |
 |    5000   |        7.4000        |
 
-   Y graficamente se puede apreciar.
-   
+   Y graficamente se puede apreciar que el tiempo tiende a incrementar.
+  ![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/01seqfile_delete.png)
+     
 ## Pruebas de uso
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
 ### Consola
