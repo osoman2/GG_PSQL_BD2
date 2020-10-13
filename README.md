@@ -323,6 +323,28 @@ public:
 Y graficamente se puede apreciar una curva logarítmica.
 ![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/01seqfile_search.png)
 
+  Los tiempos para la inserción registrados son:
+
+| Registros | Tiempo Promedio (μs) |
+|:---------:|:--------------------:|
+|    150    |        7.6000        |
+|    500    |        6.0000        |
+|    1500   |        5.0000        |
+|    5000   |        5.2000        |
+
+   Y graficamente se puede apreciar.
+  
+   Los tiempos para la inserción registrados son:  
+   
+| Registros | Tiempo Promedio (μs) |
+|:---------:|:--------------------:|
+|    150    |        5.0000        |
+|    500    |        4.8000        |
+|    1500   |        5.2000        |
+|    5000   |        7.4000        |
+
+   Y graficamente se puede apreciar.
+   
 ## Pruebas de uso
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
 ### Consola
