@@ -283,9 +283,9 @@ void add(Juego juego){
  * Complejidad Espacial: **(RAM)**
      * O(mayor de O(lg(n)) o O(k)) => Mayor de almacenamiento de indices o tamaño de un Bucket.
      
-| Registros | Search | Insertion | Delete |
-|-----------|--------|-----------|--------|
-| 277       | 0.02ms | 0.298ms   | 0.097  |
+| Registros | Search | Insertion | Delete  |
+|-----------|--------|-----------|---------|
+| 277       | 0.02ms | 0.298ms   | 0.097ms |
 
 
 ### Transacciones
