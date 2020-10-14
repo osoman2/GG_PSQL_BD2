@@ -19,7 +19,7 @@ Los resultados esperados para este proyecto es poder realizar satisfactoriamente
 ### Sequential FIle
 Lo definimos como un archivo que mantiene los registros ordenados fisicamente en base al valor de alguno de sus campos. Este nos permite tener búsquedas eficientes. Sin embargo, son dificiles de mantener y generan un costo extra a la hora de reorganizar el archivo.
 
-  * Inserción
+  * Inserción:
   Localizamos la posición en donde será insertado el nuevo registro. Si el espacio esta libre, lo insertamos. De lo contrario, insertamos un registro en un espacio auxiliar y los actualizamos los punteros.
   
   ```
@@ -109,7 +109,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
     }
   ```
   
-  * Eliminación
+  * Eliminación:
   Utilizamos los punteros para saltar las tuplas eliminadas hasta llegar al registro que queremos eliminar.
   
   ```
@@ -142,7 +142,7 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
     }
   ```
   
-  * Búsqueda
+  * Búsqueda:
   Usamos un algoritmo de busqueda binaria para llegar al registro que queremos buscar.
   
   ```
@@ -199,21 +199,89 @@ Lo definimos como un archivo que mantiene los registros ordenados fisicamente en
   
 ### Extendible Hashing
 Lo definimos como un hash dinámico para gestionar grandes base de datos y que reducen su tamaño en el tiempo (transaccionales). Estos indexan los registros en una tabla de direcciones de buckets usando un prefijo/sufijo.
-  * Inserción
-  Lozalizamos el bucket usando la secuencia D-bit. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
-  En caso no se pueda incrementar la profundidad, ocurre un desbordamiento.
+  * Inserción:
+  Lozalizamos el bucket usando la secuencia D-peso, que utiliza la equivalencia de la palabra en ASCII y la profundidad. Si no encuentra el bucket, procede a buscar uno con la con la profundidad local mínima. Si no lo encuentra, procede a crear el bucket, y si lo encuentra y no esta lleno, procedemos a insertar. Por el contrario, si el bucket se encuentra lleno, lo dividimos y reinsertamos todos los registros. Entonces se crean nuevo buckets con una nueva profundidad local y el índice es modificado.
+```
+void add(Juego juego){
+            int posiaux = hashf(juego.name);
+            fstream archi;
+            archi.open(data_name,fstream::out|fstream::in|fstream::binary);
+            archi.seekg(posiaux);
+
+
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            
+
+            if(buck.add_toBucket(juego)){
+                archi.seekp(posiaux);
+                archi.write((char*)&buck,sizeof(Bucket));
+                archi.close();
+            }
+            else{
+                archi.close();                
+                split(juego.name,juego);
+            }
+}
+
+```
+  
+  * Eliminación:
+  El algoritmo de eliminación Localizar el bucket respectivo mediante el índice y remueve utilizando la técnica de FreeList. Cuando el tamaño del Bucket sea 0, los indices serán alterados.
   ```
+  void delete_element(char* key){
+            int posiaux = hashf(key);
+            fstream archi;
+            archi.open(data_name,fstream::out|fstream::in|fstream::binary);
+            archi.seekg(posiaux);
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            
+            
+            if(buck.eliminate(key)){
+                archi.seekp(posiaux);
+                archi.write((char*)&buck,sizeof(Bucket));
+                archi.close();
+            }
+            else{
+                cout<<"El bucket ya está vacío\n";
+            }
+        }
   ```
   
-  * Eliminación
-  Localizar el bucket respectivo mediante el índice y remover el registro. Si el bucket queda vacío, puede sr liberado, lo que implica actualizar el índice. Por otro lado, si dos buckets quedan con pocos elementos y tienen el mismo prefijo en la profundida local anterior, procedemos a mezclarlos, lo que implica actualizar el índice nuevamente.
+  * Búsqueda:
+  Hacemos coincidir la secuencia D-peso con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
   ```
+    Juego search(char* key){
+            int posiaux = hashf(key);
+            ifstream archi;
+            archi.open(data_name,ifstream::in|ifstream::binary);
+            archi.seekg(posiaux);
+            Bucket buck;
+            archi.read((char*)&buck,sizeof(Bucket));
+            archi.close();
+            return buck.find(key);
+    }
+  
   ```
   
-  * Búsqueda
-  Hacemos coincidir la secuencia D-bit con una entrada del directorio y nos dirigimos al bucket correspondiente para encontrar el registro.
-  ```
-  ```
+  * Añadidos-FreeList:
+      En cada bucket, se utiliza una técnica de FreeList, asegurando el proceso de inserción y eliminación en complejidad    O(1) asegurando un buen desempeño a nivel lógico, a cambio se creará un campo en los registros que contenga el atributo next_del,y un header que apunte a la posición disponible. 
+
+  
+  * Límites
+      * En la eliminación, dado el caso con 2 o más buckets con un tamaño menor al permitido, no se realiza el merge.
+      * La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
+      * El desbordamiento no es mapeado debido a que no se  
+ 
+ * Demostration:
+  ![Visualization](https://github.com/osoman2/GG_PSQL_BD2/blob/master/docu/Struct_page-0001.jpg)
+ * Complejidad Teórica:**(en memoria secundaria)**
+      * O(1) => Inserción
+      * O(1) => Delete
+      * O(k) => Search, k es la cantidad de registros en un bucket
+ * Complejidad Espacial: **(RAM)**
+     * O(mayor de O(lg(n)) o O(k)) => Mayor de almacenamiento de indices o tamaño de un Bucket 
   
 ### Transacciones
 Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.

@@ -228,9 +228,7 @@ class ExtendibleHash{
             }
         }
 
-        void  lack(int key){
-
-        }
+       
 
         void update_ind(){
             fstream ind_file;
