@@ -281,10 +281,12 @@ void add(Juego juego){
       * O(1) => Delete
       * O(k) => Search, k es la cantidad de registros en un bucket
  * Complejidad Espacial: **(RAM)**
-     * O(mayor de O(lg(n)) o O(k)) => Mayor de almacenamiento de indices o tamaño de un Bucket 
-| Registros |     Búsqueda (ms)    |     Inserción (ms)   |      Delete (ms)     |
-|:---------:|:--------------------:|:--------------------:|:--------------------:|
-|    277    |        0.02          |        0.298         |        0.097         |
+     * O(mayor de O(lg(n)) o O(k)) => Mayor de almacenamiento de indices o tamaño de un Bucket.
+     
+| Registros | Search | Insertion | Delete |
+|-----------|--------|-----------|--------|
+| 277       | 0.02ms | 0.298ms   | 0.097  |
+
 
 ### Transacciones
 Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.
