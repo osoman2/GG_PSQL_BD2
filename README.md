@@ -10,9 +10,9 @@ La emergencia sanitaria en la que nos encontramos ha traído varios desafíos en
 
 El objetivo de este proyecto es realizar un gestor de base de datos simple con interfaz gráfica de usuario, limitado a las operaciones de búsqueda, inserción y eliminación, usando dos técnicas de organización de archivos. Además, se va a simular un planificador de transacciones concurrentes con las operaciones de lectura y escritura.
 
-El dominio de datos esta basado en la plataforma digital de videojuegos, STEAM. Los campos son: Código, Nombre, Descripción, Precio y valoración.
+El dominio de datos esta basado en la plataforma digital de videojuegos, STEAM. Los campos son: Id, Nombre, Descripción y Horas Jugadas.
 
-Los resultados esperados para este proyecto es poder realizar satisfactoriamente un gestor de base de datos eficiente con una interfaz amigable para el usuario. Este será puesto a prueba para medir su desempeño en las diferentes operaciones, y posteriormente ser analizado.
+Los resultados esperados para este proyecto son poder realizar satisfactoriamente un gestor de base de datos eficiente con una interfaz amigable para el usuario. Este será puesto a prueba para medir su desempeño en las diferentes operaciones, y posteriormente ser analizado.
 
 ## Técnicas utilizadas
 
