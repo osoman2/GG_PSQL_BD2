@@ -3,7 +3,7 @@
 #include "GeneralHeader.h"
 #define iter(i,a,b) for(int i=a ; i<b ; i++)
 using namespace std;
-const int TAM_MAX = 3;
+const int TAM_MAX = 20;
 
 class Bucket{
     public:
