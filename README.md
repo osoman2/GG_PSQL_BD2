@@ -274,6 +274,14 @@ void add(Juego juego){
       * La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
       * El desbordamiento no es mapeado debido a que no se  
  
+ * Demostration:
+  ![Visualization](https://github.com/osoman2/GG_PSQL_BD2/blob/master/docu/Struct_page-0001.jpg)
+ * Complejidad Teórica:**(en memoria secundaria)**
+      * O(1) => Inserción
+      * O(1) => Delete
+      * O(k) => Search, k es la cantidad de registros en un bucket
+ * Complejidad Espacial: **(RAM)**
+     * O(mayor de O(lg(n)) o O(k)) => Mayor de almacenamiento de indices o tamaño de un Bucket 
   
 ### Transacciones
 Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.
