@@ -17,7 +17,7 @@ int main(){
   //juego8.set_value();
   //juego9.set_value();
   //juego10.set_value();  
-  
+  //
   //extend_table.add(juego1);
   //extend_table.add(juego2);
   //extend_table.add(juego3);

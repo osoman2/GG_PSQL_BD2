@@ -11,7 +11,14 @@ class Juego{
     int next_del=-2;
     int HorasJugadas=0;
 
-   
+    Juego(){}
+
+   Juego (char* _id,char* _name,char* _description,int h_j){
+      strcpy(id,_id);
+      strcpy(name,_name);
+      strcpy(description,_description);
+      HorasJugadas = h_j;
+   }
 
     void set_value(){
         cout<<"Ingrese el id:\n";
