@@ -23,4 +23,4 @@ add_executable(GG_PSQL_BD2
         Components/node.h
         Components/edge.h
         Components/Graph.h
-        Testcases/TestPlanner.h)
+        Testcases/TestPlanner.h Testcases/TestExtendible.h)

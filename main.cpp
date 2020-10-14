@@ -9,6 +9,6 @@ int main() {
     //TestPlanner::serializableTest();
     //TestConcurrency::run();
     string filenameGames = "../data/gamesfullv2.dat";
-    //testLoad_add_Games5k(filenameGames, 5000);
+    //testLoad_add_Games5k(filenameGames, 150);
     TestController::testRunGames(filenameGames);
 }

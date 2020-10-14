@@ -35,17 +35,17 @@ public:
     static void testRunGames(string filename) {
         vector<string> lines;
         AppController<Game> app;
-        double actualtime;
-        double timespent;
+        //double actualtime;
+        //double timespent;
 
-        actualtime = gettime();
+        //actualtime = gettime();
         //lines.push_back("SELECT * FROM " + filename + " WHERE name = \"Dota 2\"");
-        lines.push_back("DELETE FROM "+filename+" WHERE name = \"Dota 2\"");
-        timespent = gettime() - actualtime;
+        //lines.push_back("DELETE FROM "+filename+" WHERE name = \"Dota 2\"");
+        //timespent = gettime() - actualtime;
         //lines.push_back("INSERT INTO "+filename+" VALUES (\"77777\",\"Diablo 4\",\"Comming soon\",0)");
-        //lines.push_back("SELECT * FROM " + filename);
+        lines.push_back("SELECT * FROM " + filename);
 
-        printf("Time %.7f\n", timespent);
+        //printf("Time %.7f\n", timespent);
 
         app.run(lines);
     }
