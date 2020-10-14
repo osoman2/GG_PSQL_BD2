@@ -272,7 +272,7 @@ void add(Juego juego){
   * Límites
       * En la eliminación, dado el caso con 2 o más buckets con un tamaño menor al permitido, no se realiza el merge.
       * La búsqueda se presenta bajo un solo parámetro, la generalización está fuera del scope pensado.
-      * El desbordamiento no es mapeado debido a que no se  
+      * El desbordamiento no esta mapeado.
  
  * Demostration:
   ![Visualization](https://github.com/osoman2/GG_PSQL_BD2/blob/master/docu/Struct_page-0001.jpg)
