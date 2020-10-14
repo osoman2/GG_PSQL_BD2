@@ -287,31 +287,51 @@ void add(Juego juego){
 Lo definimos como un conjunto de operaciones de acceso a base de datos que conforman una unidad lógica de trabajo.
 
 ```
+sem_t db_elements[N]; //resources from data base
+
 class Planner {
-public:
-    string prefix;
+private:
+
     typedef vector<pair<string, string>> operation; //Operation, resource
 
     unordered_map<string, operation> transactions;
+    unordered_map<string, int> resources;
 
-    graph *precedence;
+public:
+    string prefix;
+    graph precedence;
     bool print;
+    int num;
 
     Planner() {
         this->prefix = "T";
-        precedence = new graph(true);
+        this->num = 0;
+        precedence = graph(true);
         print = false;
+
+        for (int i = 0; i < N; i++)
+            sem_init(&db_elements[i], 0, 0);
+    }
+
+    void* execute(void *){
+        cout << "TestPlanner2 :: execute from Thread ID : " << std::endl;
+        return NULL;
     }
 
     void addTransaction(int id) {
         auto str_id = this->prefix + to_string(id);
         transactions[str_id];
 
-        precedence->addVertex(str_id, 0, 0);
+        precedence.addVertex(str_id, 0, 0);
     }
 
     void read(int id, string resource) {
         find_conflicts(id, "R", resource);
+
+        if (this->resources.find(resource) == this->resources.end()) {
+            this->resources[resource] = this->num;
+            this->num++;
+        }
 
         auto str_id = this->prefix + to_string(id);
 
@@ -324,6 +344,11 @@ public:
     void write(int id, string resource) {
         find_conflicts(id, "W", resource);
 
+        if (this->resources.find(resource) == this->resources.end()) {
+            this->resources[resource] = this->num;
+            this->num++;
+        }
+
         auto str_id = this->prefix + to_string(id);
 
         this->transactions[str_id].push_back(make_pair("W", resource));
@@ -332,11 +357,59 @@ public:
             cout << str_id << " WRITE " << resource << endl;
     }
 
-    bool isSerializable() {
-        return !precedence->is_cyclic();
+    void exe_plan(int id) {
+        auto str_id = this->prefix + to_string(id);
+
+        auto operations = this->transactions[str_id];
+
+        for (auto operation: operations) {
+            if (operation.first == "R" )
+                this->xread(id, operation.second);
+            else
+                this->xwrite(id, operation.second);
+        }
     }
+
+    void xread(int id, string resource) {
+        auto sem_no = this->resources[resource];
+
+        auto str_id = this->prefix + to_string(id);
+        //cout << str_id << " r semaphore " << sem_no <<endl;
+        sem_post(&db_elements[sem_no]);
+        if (this->print)
+            cout << str_id << " xREAD " << resource << endl;
+    }
+
+    void xwrite(int id, string resource) {
+        auto sem_no = this->resources[resource];
+
+        auto str_id = this->prefix + to_string(id);
+        //cout << str_id << " w semaphore " << sem_no <<endl;
+        sem_wait(&db_elements[sem_no]);
+        if (this->print)
+            cout << str_id << " xWRITE " << resource << endl;
+    }
+
+    bool isSerializable() {
+        return !precedence.is_cyclic();
+    }
+
     void showPrecedenceGraph() {
-        precedence->printGraph();
+        precedence.printGraph();
+    }
+
+    void showResource() {
+        for(auto res: this->resources)
+            cout << res.first << " " << res.second <<endl;
+    }
+
+    void show_operations(int id) {
+        auto str_id = this->prefix + to_string(id);
+
+        auto operations = this->transactions[str_id];
+
+        for(auto operation: operations)
+            cout << str_id << ": " << operation.first << " " <<operation.second << endl;
     }
 
 private:
@@ -356,8 +429,8 @@ private:
 
                 for(auto itOpe=operations.rbegin() ; itOpe != operations.rend() ; ++itOpe)
                     if(itOpe->first == ope_str && itOpe->second == resource) {
-                        if (!precedence->findEdge(to_id, from_id, resource))
-                            precedence->addEdge(to_id, from_id, 0, resource);
+                        if (!precedence.findEdge(to_id, from_id, resource))
+                            precedence.addEdge(to_id, from_id, 0, resource);
                     }
             }
         }
@@ -365,7 +438,7 @@ private:
 
 public:
     ~Planner() {
-        delete precedence;
+        //delete precedence;
     }
 };
 ```
@@ -414,6 +487,15 @@ Y graficamente se puede apreciar una curva logarítmica.
 
    Y graficamente se puede apreciar que el tiempo tiende a incrementar.
   ![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/01seqfile_delete.png)
+     
+### Simulador del planificación de concurrencia
+Para simular las transacciones recurrimos al uso de threads, 1 transacción para cada thread con los recursos compartidos X, Y y Z. Una vez finalizada la ejecución de los threads se procede a armar el grafo de precedencia:
+
+![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/TestPlan_01.png)
+Graficamente se puede apreciar que no se contiene ciclos, por lo cual es serializable.
+![enter image description here](https://github.com/osoman2/GG_PSQL_BD2/blob/master/docu/Grafo.png?raw=true)
+Finalmente realizamos la planificacion equivalente usando los semáforos como mecanismo de bloqueo exclusivo del recurso Z, Y y X con ellos aseguramos que dos transacciones no puedan tomar un mismo recurso al mismo tiempo.
+![enter image description here](https://raw.githubusercontent.com/osoman2/GG_PSQL_BD2/master/docu/TestPlan_02.png)     
      
 ## Pruebas de uso
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
