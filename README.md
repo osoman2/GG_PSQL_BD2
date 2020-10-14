@@ -504,7 +504,7 @@ Finalmente realizamos la planificacion equivalente usando los semáforos como me
      
 ## Pruebas de uso
 Para realizar las pruebas y mostrar los datos decidimos hacerlo tanto en consola como en QT.
-### Consola
+
 ### QT
 Realizamos una interface para presentar la tabla de datos usando ambas técnicas y con una actualización de la tabla en tiempo real para cada una de las operaciones.
 
