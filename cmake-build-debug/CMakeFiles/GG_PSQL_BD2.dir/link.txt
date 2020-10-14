@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -g   CMakeFiles/GG_PSQL_BD2.dir/main.cpp.o  -o GG_PSQL_BD2 

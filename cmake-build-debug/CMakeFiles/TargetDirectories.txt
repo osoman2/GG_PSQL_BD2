@@ -1,0 +1,3 @@
+/home/theflilux/CLionProjects/GG_PSQL_BD2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/theflilux/CLionProjects/GG_PSQL_BD2/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/theflilux/CLionProjects/GG_PSQL_BD2/cmake-build-debug/CMakeFiles/GG_PSQL_BD2.dir
